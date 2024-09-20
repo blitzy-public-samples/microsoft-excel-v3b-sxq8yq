@@ -1,0 +1,182 @@
+# GitHub Actions workflow for automating the release process of Microsoft Excel across multiple platforms
+
+name: Release Workflow
+
+# Trigger the workflow when a tag starting with 'v' is pushed
+on:
+  push:
+    tags:
+      - 'v*'
+
+# Define environment variables for secrets and credentials
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
+  APPLE_DEVELOPER_CERTIFICATE_BASE64: ${{ secrets.APPLE_DEVELOPER_CERTIFICATE_BASE64 }}
+  APPLE_DEVELOPER_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_DEVELOPER_CERTIFICATE_PASSWORD }}
+  WINDOWS_CERT_BASE64: ${{ secrets.WINDOWS_CERT_BASE64 }}
+  WINDOWS_CERT_PASSWORD: ${{ secrets.WINDOWS_CERT_PASSWORD }}
+
+jobs:
+  build_and_release_windows:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 6.0.x
+
+      - name: Build Windows Desktop App
+        run: dotnet build src/desktop/windows/ExcelApp.csproj -c Release
+
+      - name: Run Windows Tests
+        run: dotnet test tests/desktop/windows/ExcelAppTests.cs
+
+      - name: Sign Windows Executable
+        run: scripts/sign_windows.ps1
+
+      - name: Create Windows Installer
+        run: scripts/create_windows_installer.ps1
+
+      - name: Upload Windows Artifact
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: ./ExcelSetup.exe
+          asset_name: ExcelSetup-Windows.exe
+          asset_content_type: application/octet-stream
+
+  build_and_release_macos:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
+
+      - name: Build macOS App
+        run: xcodebuild -project src/desktop/macos/ExcelApp.xcodeproj -scheme ExcelApp -configuration Release
+
+      - name: Run macOS Tests
+        run: xcodebuild test -project src/desktop/macos/ExcelApp.xcodeproj -scheme ExcelAppTests
+
+      - name: Sign macOS App
+        run: scripts/sign_macos.sh
+
+      - name: Create macOS DMG
+        run: scripts/create_macos_dmg.sh
+
+      - name: Upload macOS Artifact
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: ./Excel.dmg
+          asset_name: Excel-macOS.dmg
+          asset_content_type: application/octet-stream
+
+  build_and_release_web:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 14.x
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build Web App
+        run: npm run build
+
+      - name: Run Web Tests
+        run: npm test
+
+      - name: Deploy to Azure
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: excel-web-app
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+
+  build_and_release_mobile:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup Java
+        uses: actions/setup-java@v2
+        with:
+          java-version: 11
+
+      - name: Setup Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
+
+      - name: Build iOS App
+        run: xcodebuild -project src/mobile/ios/ExcelApp.xcodeproj -scheme ExcelApp -configuration Release -sdk iphoneos
+
+      - name: Build Android App
+        run: ./gradlew assembleRelease
+
+      - name: Sign iOS App
+        run: scripts/sign_ios.sh
+
+      - name: Sign Android App
+        run: scripts/sign_android.sh
+
+      - name: Upload iOS Artifact
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: ./Excel.ipa
+          asset_name: Excel-iOS.ipa
+          asset_content_type: application/octet-stream
+
+      - name: Upload Android Artifact
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: ./app-release.apk
+          asset_name: Excel-Android.apk
+          asset_content_type: application/vnd.android.package-archive
+
+  create_release_notes:
+    needs: [build_and_release_windows, build_and_release_macos, build_and_release_web, build_and_release_mobile]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Generate Release Notes
+        run: scripts/generate_release_notes.sh
+
+      - name: Update Release Notes
+        uses: softprops/action-gh-release@v1
+        with:
+          body_path: RELEASE_NOTES.md
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+# Human tasks:
+# - Review and adjust version numbering strategy
+# - Set up code signing certificates for all platforms
+# - Configure secrets for API keys and deployment credentials
+# - Implement additional platform-specific tests before release
