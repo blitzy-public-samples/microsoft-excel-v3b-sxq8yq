@@ -1,0 +1,60 @@
+{
+  "compilerOptions": {
+    // Specify ECMAScript target version
+    "target": "ES2020",
+    // Specify module code generation
+    "module": "ESNext",
+    // List of library files to be included in the compilation
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    // Specify JSX code generation
+    "jsx": "react",
+    // Enable all strict type checking options
+    "strict": true,
+    // Enables emit interoperability between CommonJS and ES Modules
+    "esModuleInterop": true,
+    // Skip type checking of declaration files
+    "skipLibCheck": true,
+    // Ensure that casing is correct in imports
+    "forceConsistentCasingInFileNames": true,
+    // Specify module resolution strategy
+    "moduleResolution": "node",
+    // Allow importing .json files
+    "resolveJsonModule": true,
+    // Ensure that each file can be safely transpiled without relying on other imports
+    "isolatedModules": true,
+    // Do not emit output (useful when using ts with a bundler)
+    "noEmit": true,
+    // Base directory to resolve non-relative module names
+    "baseUrl": ".",
+    // Map paths for module resolution
+    "paths": {
+      "@core/*": ["src/core/*"],
+      "@shared/*": ["src/shared/*"],
+      "@web/*": ["src/web/frontend/src/*"]
+    },
+    // List of type definitions to be included
+    "types": ["jest", "node"]
+  },
+  // Specify files to include in compilation
+  "include": [
+    "src/web/frontend/src/**/*.ts",
+    "src/web/frontend/src/**/*.tsx",
+    "src/shared/**/*.ts"
+  ],
+  // Specify files to exclude from compilation
+  "exclude": [
+    "node_modules",
+    "build",
+    "dist",
+    "scripts",
+    "acceptance-tests",
+    "webpack",
+    "jest",
+    "src/setupTests.ts"
+  ]
+}
+
+// TODO: Human tasks
+// - Review and adjust compiler options based on project requirements
+// - Ensure all necessary directories are included in the 'include' array
+// - Verify that the 'exclude' array contains all necessary exclusions
