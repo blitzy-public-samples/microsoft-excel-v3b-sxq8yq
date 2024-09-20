@@ -1,0 +1,86 @@
+# GitHub Actions workflow for Continuous Integration of Microsoft Excel
+
+name: Microsoft Excel CI
+
+# Trigger the workflow on push or pull request events
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      # Check out the repository code
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      # Set up .NET environment
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 6.0.x
+
+      # Set up Node.js environment
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 14.x
+
+      # Install project dependencies
+      - name: Install dependencies
+        run: |
+          dotnet restore
+          npm ci
+
+      # Build the project
+      - name: Build
+        run: |
+          dotnet build --configuration Release --no-restore
+          npm run build
+
+      # Run tests
+      - name: Run tests
+        run: |
+          dotnet test --no-restore --verbosity normal
+          npm test
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      # Check out the repository code
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      # Set up Node.js environment
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 14.x
+
+      # Install project dependencies
+      - name: Install dependencies
+        run: npm ci
+
+      # Run linter
+      - name: Run linter
+        run: npm run lint
+
+  security-scan:
+    runs-on: ubuntu-latest
+    steps:
+      # Check out the repository code
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      # Run security scan using Snyk
+      - name: Run security scan
+        uses: snyk/actions/node@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+
+# Human tasks:
+# - Review and adjust CI workflow as needed based on specific project requirements
+# - Set up appropriate secrets in GitHub repository settings for sensitive information
+# - Ensure all necessary build dependencies are correctly specified
+# - Verify that all test suites are included and properly configured
