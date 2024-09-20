@@ -1,0 +1,46 @@
+Copyright (c) 2023 Microsoft Corporation. All rights reserved.
+
+IMPORTANT: READ THIS LICENSE CAREFULLY BEFORE USING THE SOFTWARE. BY USING THE SOFTWARE, YOU AGREE TO BE BOUND BY THE TERMS OF THIS LICENSE.
+
+1. License Grant
+Subject to the terms and conditions of this License, Microsoft Corporation ("Microsoft") grants you a non-exclusive, non-transferable license to use Microsoft Excel ("the Software") solely for your internal business purposes.
+
+2. Restrictions
+You may not, and you agree not to or enable others to:
+a) Copy, modify, adapt, translate, reverse engineer, decompile, disassemble, or create derivative works based on the Software;
+b) Distribute, sublicense, rent, lease, loan, or otherwise transfer the Software to any third party;
+c) Remove, obscure, or alter any copyright, trademark, or other proprietary rights notices from the Software;
+d) Use the Software for any unlawful purpose or in any manner that violates any applicable laws or regulations.
+
+3. Ownership
+The Software is protected by copyright and other intellectual property laws. Microsoft retains all right, title, and interest in and to the Software, including all copyrights, patents, trade secrets, trademarks, and other intellectual property rights.
+
+4. Limited Warranty and Disclaimer
+Microsoft warrants that the Software will perform substantially in accordance with the accompanying documentation for a period of 90 days from the date of receipt. Microsoft's entire liability and your exclusive remedy for any breach of this warranty shall be, at Microsoft's option, either (a) return of the price paid for the Software or (b) repair or replacement of the Software.
+
+TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, MICROSOFT DISCLAIMS ALL OTHER WARRANTIES, EITHER EXPRESS OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT, WITH REGARD TO THE SOFTWARE.
+
+5. Limitation of Liability
+TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, IN NO EVENT SHALL MICROSOFT BE LIABLE FOR ANY SPECIAL, INCIDENTAL, INDIRECT, OR CONSEQUENTIAL DAMAGES WHATSOEVER (INCLUDING, WITHOUT LIMITATION, DAMAGES FOR LOSS OF BUSINESS PROFITS, BUSINESS INTERRUPTION, LOSS OF BUSINESS INFORMATION, OR ANY OTHER PECUNIARY LOSS) ARISING OUT OF THE USE OF OR INABILITY TO USE THE SOFTWARE, EVEN IF MICROSOFT HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
+
+6. Termination
+This License is effective until terminated. Your rights under this License will terminate automatically without notice from Microsoft if you fail to comply with any term(s) of this License. Upon termination of the License, you shall cease all use of the Software and destroy all copies, full or partial, of the Software.
+
+7. Governing Law
+This License shall be governed by and construed in accordance with the laws of the State of Washington, USA, without regard to its conflict of law provisions.
+
+8. Entire Agreement
+This License constitutes the entire agreement between you and Microsoft relating to the Software and supersedes all prior or contemporaneous understandings regarding such subject matter.
+
+By using the Software, you acknowledge that you have read this License, understand it, and agree to be bound by its terms and conditions.
+
+Microsoft Corporation
+One Microsoft Way
+Redmond, WA 98052
+USA
+
+/* Human Tasks:
+1. Review and approve the license terms with the legal department
+2. Ensure the license is compatible with all third-party libraries and components used in the project
+3. Update the license year and copyright holder information
+*/
